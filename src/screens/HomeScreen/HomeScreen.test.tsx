@@ -9,6 +9,25 @@ describe('HomeScreen', () => {
       expect(screen.getByTestId('home-screen')).toBeTruthy();
     });
 
+    it('should render empty state when no tasks', () => {
+      render(<HomeScreen />);
+      fireEvent.press(screen.getByTestId('task-delete-1'));
+      fireEvent.press(screen.getByTestId('task-delete-2'));
+      expect(screen.getByTestId('empty-state')).toBeTruthy();
+    });
+
+    it('should not crash when pressing add with empty input', () => {
+      render(<HomeScreen />);
+      const addButton = screen.getByTestId('add-button');
+      expect(() => fireEvent.press(addButton)).not.toThrow();
+    });
+
+    it('should not crash when toggling task complete', () => {
+      render(<HomeScreen />);
+      const toggleButton = screen.getByTestId('task-toggle-1');
+      expect(() => fireEvent.press(toggleButton)).not.toThrow();
+    });
+
     it('should display the title', () => {
       render(<HomeScreen />);
       expect(screen.getByText('My Tasks')).toBeTruthy();

@@ -61,6 +61,39 @@ describe('OnboardingScreen', () => {
       expect(screen.getByTestId('back-button')).toBeTruthy();
     });
 
+    it('should show correct emoji for each slide', () => {
+      render(<OnboardingScreen />);
+      const nextButton = screen.getByTestId('next-button');
+      expect(screen.getByTestId('onboarding-emoji')).toHaveTextContent('👋');
+      fireEvent.press(nextButton);
+      expect(screen.getByTestId('onboarding-emoji')).toHaveTextContent('✅');
+      fireEvent.press(nextButton);
+      expect(screen.getByTestId('onboarding-emoji')).toHaveTextContent('🚀');
+    });
+
+    it('should not crash when pressing Next multiple times', () => {
+      render(<OnboardingScreen />);
+      const nextButton = screen.getByTestId('next-button');
+      expect(() => {
+        fireEvent.press(nextButton);
+        fireEvent.press(nextButton);
+        fireEvent.press(nextButton);
+        fireEvent.press(nextButton);
+      }).not.toThrow();
+    });
+
+    it('should only call onComplete when finish button pressed', () => {
+      const onCompleteMock = jest.fn();
+      render(<OnboardingScreen onComplete={onCompleteMock} />);
+      const nextButton = screen.getByTestId('next-button');
+      fireEvent.press(nextButton);
+      fireEvent.press(nextButton);
+      expect(onCompleteMock).not.toHaveBeenCalled();
+      const finishButton = screen.getByTestId('finish-button');
+      fireEvent.press(finishButton);
+      expect(onCompleteMock).toHaveBeenCalledTimes(1);
+    });
+
     it('should navigate back to previous slide when Back button is pressed', () => {
       render(<OnboardingScreen />);
 
